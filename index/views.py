@@ -10,3 +10,8 @@ def index(request):
 # APIs here
 def test(request):
     return JsonResponse({"sina": "hi"})
+
+
+def feature_api(request):
+
+    return JsonResponse({"sina": "hi"})
