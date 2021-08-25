@@ -6,15 +6,31 @@ from .models import *
 
 
 class MediaAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['file','restaurant','food']
+    list_filter = ['restaurant','food']
+    search_fields = (
+        'food__title',
+        'restaurant__name'
+    )
+
+class MediaInline(admin.TabularInline):
+    model = Media
+    autocomplete_fields = ['user','restaurant']
+    exclude = ['thumbnail']
+    extra = 1
+
 
 
 class RestaurantAdmin(admin.ModelAdmin):
-    pass
+    inlines = [MediaInline]
+    search_fields = ['name']
 
 
 class FoodAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['title', 'restaurant']
+    list_filter = ['restaurant']
+    inlines = [MediaInline]
+
 
 
 admin.site.register(Media, MediaAdmin)
