@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-ye+)u9!=-qed#8onpg1u(n-w#d@md382db+s#g^55s1giww1np
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.4','settings-win.data.microsoft.com','0.0.0.0','localhost','127.0.0.1']
+ALLOWED_HOSTS = ['192.168.1.4', 'settings-win.data.microsoft.com', '0.0.0.0', 'localhost', '127.0.0.1']
 
 # Application definition
 
@@ -57,6 +57,8 @@ CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
 )
+
+# CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
 
 ROOT_URLCONF = 'foodinja.urls'
 
