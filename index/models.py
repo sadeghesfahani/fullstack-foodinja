@@ -52,10 +52,12 @@ class Feature(models.Model):
     food = models.ForeignKey(Food, on_delete=models.CASCADE)
     start = models.DateTimeField()
     end = models.DateTimeField()
+    def __str__(self):
+        return f"{self.food.title}"
 
 
 class Media(models.Model):
-    file = models.FileField(validators=[validate_file_size, validate_square_shape])
+    file = models.FileField(validators=[validate_file_size])
     thumbnail = models.ImageField(null=True, blank=True)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, blank=True, null=True)
     food = models.ForeignKey(Food, on_delete=models.CASCADE, blank=True, null=True)
@@ -67,7 +69,7 @@ class Media(models.Model):
     def create_thumbnail(self):
 
         image = Image.open(self.file)
-        thumbnail = image.thumbnail((90, 90), PIL.Image.ANTIALIAS)
+        thumbnail = image.thumbnail((250, 250), PIL.Image.ANTIALIAS)
         thumbnail_name, thumbnail_extention = os.path.splitext(self.file.path)
         thumbnail_extention = thumbnail_extention.lower()
         thumbnail_filename = thumbnail_name + '_thumb' + thumbnail_extention

@@ -27,13 +27,13 @@ def feature_api(request):
         temp_data['body'] = feature.food.description
         print("jere")
         try:
-            real_path = Media.objects.filter(food=feature.food).get().thumbnail.path
+            real_path = Media.objects.filter(food=feature.food).get().file.path
             base_path = str(BASE_DIR)
             print(real_path)
             print(base_path)
             excluded_path = real_path[real_path.find(base_path) + len(base_path) + 1:]
-            while r'/' in excluded_path:
-                excluded_path = excluded_path.replace('/', "\\",1)
+            while '\\' in excluded_path:
+                excluded_path = excluded_path.replace('\\', "/",1)
             print(excluded_path)
             temp_data['img'] = excluded_path
         except:
@@ -41,7 +41,7 @@ def feature_api(request):
         temp_data['url'] = "/"
         data['feature'].append(temp_data)
         temp_data = dict()
-
+    print(request.build_absolute_uri("/"))
     data['base_location'] = str(BASE_DIR)
     data['base_url'] = request.build_absolute_uri("/")
     return JsonResponse(data)
