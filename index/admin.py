@@ -32,7 +32,10 @@ class FoodAdmin(admin.ModelAdmin):
     inlines = [MediaInline]
 
 
+class FeatureAdmin(admin.ModelAdmin):
+    pass
 
 admin.site.register(Media, MediaAdmin)
 admin.site.register(Restaurant, RestaurantAdmin)
 admin.site.register(Food, FoodAdmin)
+admin.site.register(Feature,FeatureAdmin)
