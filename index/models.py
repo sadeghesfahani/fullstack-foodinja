@@ -5,6 +5,8 @@ from django.db import models
 import os.path
 from django.core.files.base import ContentFile
 from io import BytesIO
+
+from foodinja.settings import BASE_DIR
 from .validators import validate_file_size, validate_square_shape
 
 
@@ -32,13 +34,14 @@ class Food(models.Model):
 class Price(models.Model):
     food = models.ForeignKey(Food, on_delete=models.CASCADE)
     price = models.PositiveIntegerField()
-    date = models.DateField()
+    date = models.DateField(auto_now=True)
 
 
 class Comment(models.Model):
     food = models.ForeignKey(Food, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
+    date = models.DateTimeField(auto_now=True)
 
 
 class Rank(models.Model):
@@ -52,6 +55,25 @@ class Feature(models.Model):
     food = models.ForeignKey(Food, on_delete=models.CASCADE)
     start = models.DateTimeField()
     end = models.DateTimeField()
+
+    def food_media(self):
+        urls=list()
+        for media in Media.objects.filter(food_id=self.food.id):
+            computer_path=media.file.path
+            base_path = str(BASE_DIR)
+            url_path = computer_path[computer_path.find(base_path) + len(base_path) + 1:]
+            urls.append(url_path)
+        return urls
+
+    def restaurant_media(self):
+        urls = list()
+        for media in Media.objects.filter(restaurant_id=self.food.restaurant.id).filter(food=None):
+            computer_path = media.file.path
+            base_path = str(BASE_DIR)
+            url_path = computer_path[computer_path.find(base_path) + len(base_path) + 1:]
+            urls.append(url_path)
+        return urls
+
     def __str__(self):
         return f"{self.food.title}"
 

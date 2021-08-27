@@ -1,12 +1,16 @@
 from django.http import HttpResponse, JsonResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import render
-
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from foodinja.settings import BASE_DIR
 from .models import *
 
-
 # Create your views here.
+from .serializers import FeatureSerializer, MediaSerializer
+
+
 def index(request):
     return render(request, 'index/index.html')
 
@@ -49,21 +53,34 @@ def feature_api(request):
 
 def food_api(request, id):
     food = None
-    data=dict()
+    data = dict()
     if Food.objects.filter(pk=id).exists():
         food = Food.objects.filter(pk=id).get()
-        data['title']=food.title
-        data['description']= food.description
-        restaurant= Restaurant.objects.get(id=food.restaurant.id)
-        data['restaurant_name']= restaurant.name
+        data['title'] = food.title
+        data['description'] = food.description
+        restaurant = Restaurant.objects.get(id=food.restaurant.id)
+        data['restaurant_name'] = restaurant.name
         data['restaurant_description'] = restaurant.description
         data['restaurant_address'] = restaurant.address
         if Media.objects.get(food=food.id).exists():
             data['food_pictures'] = [pic for pic in Media.objects.filter(food=food.id)]
         if Media.objects.get(restaurant=restaurant.id).exists():
             data['restaurant_pictures'] = [pic for pic in Media.objects.filter(restaurant=restaurant.id)]
+        data['food_prices'] = [price for price in Price.objects.filter(food=food.id).order_by('food__price__date')]
+        data['comments'] = [comment for comment in Comment.objects.filter(food=food.id).order_by('date')]
     return JsonResponse({"data": food})
 
 
 def csrf(request):
     return JsonResponse({'csrfToken': get_token(request)})
+
+
+@api_view(['GET'])
+def FeatureList(request):
+    features = Feature.objects.all()
+    # media = Media.objects.all()
+    # feature_serializer = FeatureSerializer(features, many=True)
+    # media_serialize = MediaSerializer(media, many=True)
+    # serializer = {'feature': feature_serializer.data, "media": media_serialize.data}
+    serializer = FeatureSerializer(features,many=True)
+    return Response(serializer.data)

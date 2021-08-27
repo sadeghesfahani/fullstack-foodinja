@@ -19,6 +19,10 @@ class MediaInline(admin.TabularInline):
     exclude = ['thumbnail']
     extra = 1
 
+class PriceInline(admin.TabularInline):
+    model = Price
+    exclude = ['date']
+    extra = 1
 
 
 class RestaurantAdmin(admin.ModelAdmin):
@@ -29,12 +33,15 @@ class RestaurantAdmin(admin.ModelAdmin):
 class FoodAdmin(admin.ModelAdmin):
     list_display = ['title', 'restaurant']
     list_filter = ['restaurant']
-    inlines = [MediaInline]
+    inlines = [MediaInline,PriceInline]
 
 
 class FeatureAdmin(admin.ModelAdmin):
     pass
 
+
+class PriceAdmin(admin.ModelAdmin):
+    pass
 admin.site.register(Media, MediaAdmin)
 admin.site.register(Restaurant, RestaurantAdmin)
 admin.site.register(Food, FoodAdmin)
